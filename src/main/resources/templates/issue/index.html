@@ -64,14 +64,28 @@
     </form>
 
 
-    <div th:each="issue : ${issues}">
-        <span th:text="${issue.id}"></span> |
-        <span th:text="${issue.project.name}"></span> |
-        <span th:text="${issue.state}"></span> |
-        <span th:text="${issue.title}"></span> |
-        <span th:text="${issue.content}"></span> |
-        <span th:if="${issue.assignee != null}" th:text="${issue.assignee.name}"></span>
-    </div>
+    <table class="table table-stripped">
+
+        <tr>
+            <th th:text="#{issue.id}"></th>
+            <th th:text="#{issue.project}"></th>
+            <th th:text="#{issue.state}"></th>
+            <th th:text="#{issue.title}"></th>
+            <th th:text="#{issue.content}"></th>
+            <th th:text="#{issue.assignee}"></th>
+        </tr>
+
+        <tr th:each="issue : ${issues}">
+            <td th:text="${issue.id}"></td>
+            <td th:text="${issue.project.name}"></td>
+            <td th:text="${issue.state}"></td>
+            <td th:text="${issue.title}"></td>
+            <td th:text="${issue.content}"></td>
+            <td th:text="${issue.assignee != null ? issue.assignee.name : ''}"></td>
+        </tr>
+
+    </table>
+
 </section>
 
 </body>
