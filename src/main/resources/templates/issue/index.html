@@ -23,6 +23,8 @@
     <form th:action="@{/issue}" th:object="${filter}"
           class="form-inline">
 
+        <input type="hidden" name="sort" th:value="${filter.toSortString(issues.sort)}"/>
+
         <select th:field="*{project}"
                 class="form-control"
                 onchange="this.form.submit()">
@@ -67,12 +69,12 @@
     <table class="table table-stripped">
 
         <tr>
-            <th th:text="#{issue.id}"></th>
-            <th th:text="#{issue.project}"></th>
-            <th th:text="#{issue.state}"></th>
-            <th th:text="#{issue.title}"></th>
-            <th th:text="#{issue.content}"></th>
-            <th th:text="#{issue.assignee}"></th>
+            <th th:replace="issue/sortableColumn.html :: sortableColumn(${issues}, ${filter}, 'id')"></th>
+            <th th:replace="issue/sortableColumn.html :: sortableColumn(${issues}, ${filter}, 'project')"></th>
+            <th th:replace="issue/sortableColumn.html :: sortableColumn(${issues}, ${filter}, 'state')"></th>
+            <th th:replace="issue/sortableColumn.html :: sortableColumn(${issues}, ${filter}, 'title')"></th>
+            <th th:replace="issue/sortableColumn.html :: sortableColumn(${issues}, ${filter}, 'content')"></th>
+            <th th:replace="issue/sortableColumn.html :: sortableColumn(${issues}, ${filter}, 'assignee')"></th>
         </tr>
 
         <tr th:each="issue : ${issues}">
@@ -87,11 +89,28 @@
     </table>
 
     <div th:if="${issues.totalPages > 0}" class="row">
-        <ul th:each="pageNumber : ${#numbers.sequence(1, issues.totalPages)}" class="pagination">
-            <li th:class="${'page-item ' + ((pageNumber == issues.number + 1) ? 'active' : '')}">
-                <a th:href="@{'/issue?' + ${filter.toQueryString(pageNumber - 1)}}"
+        <ul class="pagination">
+            <li th:if="${issues.number != 0}"
+                class="page-item">
+                <a th:href="@{'/issue?' + ${filter.toQueryString(issues.number - 1, issues.sort)}}"
+                   class="page-link">
+                    <i class="fas fa-angle-left"></i>
+                </a>
+            </li>
+
+            <li th:each="pageNumber : ${#numbers.sequence(1, issues.totalPages)}"
+                th:class="${'page-item ' + ((pageNumber == issues.number + 1) ? 'active' : '')}">
+                <a th:href="@{'/issue?' + ${filter.toQueryString(pageNumber - 1, issues.sort)}}"
                    th:text="${pageNumber}"
                    class="page-link"></a>
+            </li>
+
+            <li th:if="${issues.number != issues.totalPages - 1}"
+                class="page-item">
+                <a th:href="@{'/issue?' + ${filter.toQueryString(issues.number + 1, issues.sort)}}"
+                   class="page-link">
+                    <i class="fas fa-angle-right"></i>
+                </a>
             </li>
         </ul>
     </div>
