@@ -3,6 +3,8 @@ package com.logintegra.wsbbugtracker.issues;
 import com.logintegra.wsbbugtracker.enums.State;
 import com.logintegra.wsbbugtracker.people.PersonRepository;
 import com.logintegra.wsbbugtracker.projects.ProjectRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,10 +26,11 @@ public class IssueController {
     }
 
     @GetMapping
-    ModelAndView index(@ModelAttribute IssueFilter issueFilter) {
+    ModelAndView index(@ModelAttribute IssueFilter issueFilter, Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("issue/index");
 
-        modelAndView.addObject("issues", issueRepository.findAll(issueFilter.buildQuery()));
+        Page<Issue> issues = issueRepository.findAll(issueFilter.buildQuery(), pageable);
+        modelAndView.addObject("issues", issues);
 
         modelAndView.addObject("projects", projectRepository.findAll());
         modelAndView.addObject("people", personRepository.findAll());
