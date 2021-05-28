@@ -98,7 +98,7 @@
                 </a>
             </li>
 
-            <li th:each="pageNumber : ${#numbers.sequence(1, issues.totalPages)}"
+            <li th:each="pageNumber : ${#numbers.sequence(T(Math).max(1, issues.number - 2), T(Math).min(issues.number + 4, issues.totalPages))}"
                 th:class="${'page-item ' + ((pageNumber == issues.number + 1) ? 'active' : '')}">
                 <a th:href="@{'/issue?' + ${filter.toQueryString(pageNumber - 1, issues.sort)}}"
                    th:text="${pageNumber}"
